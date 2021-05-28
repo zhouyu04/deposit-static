@@ -7,7 +7,7 @@
                     <el-input placeholder="请输入关键字进行搜索，可以直接回车搜索..." prefix-icon="el-icon-search"
                               clearable
                               @clear="fetchData"
-                              style="width: 350px;margin-right: 10px" v-model="keyword"
+                              style="width: 350px;margin-right: 10px" v-model="searchValue.skey"
                               @keydown.enter.native="fetchData"></el-input>
 
                     是否可用:
@@ -28,9 +28,9 @@
                 </div>
                 <div>
 
-<!--                    <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">-->
-<!--                        添加科目-->
-<!--                    </el-button>-->
+                    <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">
+                        添加科目
+                    </el-button>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
                 </el-table-column>
                 <el-table-column prop="subjectName" label="科目名称" align="left" width="85">
                 </el-table-column>
-                <el-table-column prop="isActive" label="状态" align="left" width="85">
+                <el-table-column prop="isActive" label="状态" align="left" width="85" :formatter="changeActiveProp">
                 </el-table-column>
             </el-table>
             <div style="display: flex;justify-content: flex-end">
@@ -65,53 +65,67 @@
                 </el-pagination>
             </div>
         </div>
-        <!--        <el-dialog-->
-        <!--                :title="title"-->
-        <!--                :visible.sync="dialogVisible"-->
-        <!--                width="80%">-->
-        <!--            <div>-->
-        <!--                <el-form :model="emp" :rules="rules" ref="empForm">-->
-        <!--                    <el-row>-->
-        <!--                        <el-col :span="6">-->
-        <!--                            <el-form-item label="科目编码:" prop="name">-->
-        <!--                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="emp.name"-->
-        <!--                                          placeholder="请输入科目编码"></el-input>-->
-        <!--                            </el-form-item>-->
-        <!--                        </el-col>-->
-        <!--                        <el-col :span="6">-->
-        <!--                            <el-form-item label="科目名称:" prop="name">-->
-        <!--                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit" v-model="emp.name"-->
-        <!--                                          placeholder="请输入科目名称"></el-input>-->
-        <!--                            </el-form-item>-->
-        <!--                        </el-col>-->
-        <!--                    </el-row>-->
-        <!--                </el-form>-->
-        <!--            </div>-->
-        <!--            <span slot="footer" class="dialog-footer">-->
-        <!--    <el-button @click="dialogVisible = false">取 消</el-button>-->
-        <!--    <el-button type="primary" @click="doAddEmp">确 定</el-button>-->
-        <!--  </span>-->
-        <!--        </el-dialog>-->
+        <el-dialog
+                :title="title"
+                :visible.sync="dialogVisible"
+                width="80%">
+            <div>
+                <el-form :model="sub" :rules="rules" ref="subForm">
+                    <el-row>
+                        <el-col :span="6">
+                            <el-form-item label="科目编码:" prop="subjectCode">
+                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"
+                                          v-model="sub.subjectCode"
+                                          placeholder="请输入科目编码"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="科目名称:" prop="subjectName">
+                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"
+                                          v-model="sub.subjectName"
+                                          placeholder="请输入科目名称"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="doAddSub">确 定</el-button>
+          </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+
     export default {
         data() {
             return {
                 searchValue: {
+                    page: 1,
+                    size: 10,
+                    skey: '',
+                    isActive: [{'id': 0, 'name': '全部'}, {'id': 1, 'name': '可用'}, {'id': 2, 'name': '不可用'}],
+                },
+                title: '',
+                subs: [],
+                total: 0,
+                page: 1,
+                size: 10,
+                loading: false,
+                hasActive: 1,
+                isActive: [{'id': 0, 'name': '全部'}, {'id': 1, 'name': '可用'}, {'id': 2, 'name': '不可用'}],
+                dialogVisible: false,
+                sub: {
                     subjectCode: '',
                     subjectName: '',
-                    isActive: [{'id':1,'name':'可用'},{'id':2,'name':'不可用'}],
+                    isActive: [{'id': 0, 'name': '全部'}, {'id': 1, 'name': '可用'}, {'id': 2, 'name': '不可用'}],
                 },
-                subs:[],
-                total: 0,
-                loading: false,
-                keyword:'',
-                isActive:'',
-                // subjectCode: '',
-                // subjectName: '',
-                // isActive: 1
+                rules: {
+                    subjectCode: [{required: true, message: '请输入科目代码', trigger: 'blur'}],
+                    subjectName: [{required: true, message: '请输入科目名称', trigger: 'blur'}],
+                }
             }
         },
         created() {
@@ -126,13 +140,11 @@
         methods: {
             fetchData() {
                 let url = '/deposit/sub/list';
-                let param = {page: this.page, size: this.size};
-                if (this.keyword != '') {
-                    param = {page: this.page, size: this.size,skey:this.keyword};
-                }
-                this.$axios.post(url, param)
-                    .then(resp =>{
-                        if (resp){
+                let searchValue = this.searchValue;
+
+                this.$axios.post(url, searchValue)
+                    .then(resp => {
+                        if (resp) {
                             this.subs = resp.data;
                             this.total = resp.total;
                         }
@@ -143,15 +155,55 @@
             },
 
             sizeChange(currentSize) {
-                this.size = currentSize;
+                console.log("改变分页：" + currentSize);
+                this.searchValue.size = currentSize;
                 this.fetchData();
             },
             currentChange(currentPage) {
-                this.page = currentPage;
+                console.log("改变当前页：" + currentPage);
+                this.searchValue.page = currentPage;
                 this.fetchData();
             },
 
+            showAddEmpView() {
+                this.emptySub();
+                this.title = '添加科目';
+                this.dialogVisible = true;
+            },
 
+            emptySub() {
+                this.sub = {
+                    subjectCode: '',
+                    subjectName: '',
+                    isActive: '',
+                };
+            },
+
+            doAddSub() {
+                this.$refs['subForm'].validate(valid => {
+                    if (valid) {
+                        console.log(this.sub)
+                        this.postRequest("/deposit/sub/add", this.sub).then(resp => {
+                            if (resp) {
+                                this.dialogVisible = false;
+                                this.fetchData();
+                            }
+                        })
+                    }
+                });
+            },
+
+            changeActiveProp(row, column) {
+                const prop = row[column.property];
+
+                let string = null;
+                if (prop == 1) {
+                    string = "生效";
+                } else {
+                    string = "未生效";
+                }
+                return string;
+            }
         }
     }
 </script>
