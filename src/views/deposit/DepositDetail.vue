@@ -1,99 +1,49 @@
 <template>
     <div>
-        <div>
-            <div style="display: flex;justify-content: space-between">
-                <div>
 
-                    <el-input placeholder="请输入关键字进行搜索，可以直接回车搜索..." prefix-icon="el-icon-search"
-                              clearable
-                              @clear="fetchData"
-                              style="width: 350px;margin-right: 10px" v-model="searchValue.skey"
-                              @keydown.enter.native="fetchData"></el-input>
+        <el-form ref="form" :model="form" label-width="80px">
 
-                    是否可用:
-                    <el-select v-model="searchValue.isActive" placeholder="是否可用" size="mini"
-                               style="width: 130px;margin-right: 10px">
-                        <el-option
-                                v-for="item in isActive"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
+            <el-form-item label="科目名称">
+                <el-select v-model="value" filterable placeholder="请选择">
+                    <el-option
+                            v-for="item in subs"
+                            :key="item.code"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
 
-                    <el-button icon="el-icon-search" type="primary" @click="fetchData">
-                        搜索
-                    </el-button>
-
-                </div>
-                <div>
-
-                    <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">
-                        添加科目
-                    </el-button>
-                </div>
-            </div>
-        </div>
-        <div style="margin-top: 10px">
-            <el-table
-                    :data="subs"
-                    stripe
-                    border
-                    v-loading="loading"
-                    element-loading-text="正在加载..."
-                    element-loading-spinner="el-icon-loading"
-                    element-loading-background="rgba(0, 0, 0, 0.8)"
-                    style="width: 100%">
-                <el-table-column
-                        type="selection"
-                        width="55">
-                </el-table-column>
-                <el-table-column prop="subjectCode" fixed align="left" label="科目代码" width="90">
-                </el-table-column>
-                <el-table-column prop="subjectName" label="科目名称" align="left" width="85">
-                </el-table-column>
-                <el-table-column prop="isActive" label="状态" align="left" width="85" :formatter="changeActiveProp">
-                </el-table-column>
-            </el-table>
-            <div style="display: flex;justify-content: flex-end">
-                <el-pagination
-                        background
-                        @current-change="currentChange"
-                        @size-change="sizeChange"
-                        layout="sizes, prev, pager, next, jumper, ->, total, slot"
-                        :total="total">
-                </el-pagination>
-            </div>
-        </div>
-        <el-dialog
-                :title="title"
-                :visible.sync="dialogVisible"
-                width="80%">
-            <div>
-                <el-form :model="sub" :rules="rules" ref="subForm">
-                    <el-row>
-                        <el-col :span="6">
-                            <el-form-item label="科目编码:" prop="subjectCode">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"
-                                          v-model="sub.subjectCode"
-                                          placeholder="请输入科目编码"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-form-item label="科目名称:" prop="subjectName">
-                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"
-                                          v-model="sub.subjectName"
-                                          placeholder="请输入科目名称"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                </el-form>
-            </div>
-            <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="doAddSub">确 定</el-button>
-          </span>
-        </el-dialog>
+        </el-form>
+<!--        <el-dialog-->
+<!--                :title="title"-->
+<!--                :visible.sync="dialogVisible"-->
+<!--                width="80%">-->
+<!--            <div>-->
+<!--                <el-form :model="sub" :rules="rules" ref="subForm">-->
+<!--                    <el-row>-->
+<!--                        <el-col :span="6">-->
+<!--                            <el-form-item label="科目编码:" prop="subjectCode">-->
+<!--                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"-->
+<!--                                          v-model="sub.subjectCode"-->
+<!--                                          placeholder="请输入科目编码"></el-input>-->
+<!--                            </el-form-item>-->
+<!--                        </el-col>-->
+<!--                        <el-col :span="6">-->
+<!--                            <el-form-item label="科目名称:" prop="subjectName">-->
+<!--                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"-->
+<!--                                          v-model="sub.subjectName"-->
+<!--                                          placeholder="请输入科目名称"></el-input>-->
+<!--                            </el-form-item>-->
+<!--                        </el-col>-->
+<!--                    </el-row>-->
+<!--                </el-form>-->
+<!--            </div>-->
+<!--            <span slot="footer" class="dialog-footer">-->
+<!--            <el-button @click="dialogVisible = false">取 消</el-button>-->
+<!--            <el-button type="primary" @click="doAddSub">确 定</el-button>-->
+<!--          </span>-->
+<!--        </el-dialog>-->
     </div>
 </template>
 
