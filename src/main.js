@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import axios from 'axios'
+
 import {
     Button,
     Input,
@@ -113,8 +115,9 @@ Vue.prototype.postKeyValueRequest = postKeyValueRequest;
 Vue.prototype.putRequest = putRequest;
 Vue.prototype.deleteRequest = deleteRequest;
 Vue.prototype.getRequest = getRequest;
+Vue.prototype.$axios = axios;
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
     if (to.path == '/') {
