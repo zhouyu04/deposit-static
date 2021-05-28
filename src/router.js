@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './views/Login.vue'
 import Home from './views/Home.vue'
+import DepositDetail from './views/deposit/DepositDetail'
 import FriendChat from './views/chat/FriendChat.vue'
 import HrInfo from './views/HrInfo.vue'
 
@@ -13,6 +14,11 @@ export default new Router({
             path: '/',
             name: 'Login',
             component: Login,
+            hidden: true
+        }, {
+            path: '/deposit/detail',
+            name: '保证金详情',
+            component: DepositDetail,
             hidden: true
         }, {
             path: '/home',
@@ -39,5 +45,6 @@ export default new Router({
             path: '*',
             redirect: '/home'
         }
+
     ]
 })
