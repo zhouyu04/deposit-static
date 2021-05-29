@@ -70,7 +70,7 @@
                 :visible.sync="dialogVisible"
                 width="80%">
             <div>
-                <el-form :model="sub" :rules="rules" ref="subForm">
+                        <el-form :model="sub" :rules="rules" ref="subForm">
                     <el-row>
                         <el-col :span="6">
                             <el-form-item label="科目编码:" prop="subjectCode">
