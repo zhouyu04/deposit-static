@@ -4,7 +4,8 @@
             <el-row>
                 <el-col :span="6">
                     <el-form-item label="科目名称" prop="subId">
-                        <el-select style="width: 200px" v-model="deposit.subId" :filterable="false" filterable placeholder="请选择">
+                        <el-select style="width: 200px" v-model="deposit.subId" :filterable="false" filterable
+                                   placeholder="请选择">
                             <el-option
                                     v-for="item in subs"
                                     :key="item.subjectCode"
@@ -17,7 +18,7 @@
                 <el-col :span="6">
                     <el-form-item label="摘要:" prop="project">
                         <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.project"
+                                  v-model="deposit.project" @blur=""
                                   placeholder="请输入摘要"></el-input>
                     </el-form-item>
                 </el-col>
@@ -216,7 +217,7 @@
                 });
             },
 
-            cancelDeposit(){
+            cancelDeposit() {
                 this.$router.push('/deposit/base')
             },
 
@@ -230,7 +231,12 @@
                     string = "未生效";
                 }
                 return string;
-            }
+            },
+
+            onInputBlur() {
+                let self = this;
+                console.log("失去焦点：" + self)
+            },
         }
     }
 </script>
