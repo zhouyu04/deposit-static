@@ -15,12 +15,7 @@ export default new Router({
             name: 'Login',
             component: Login,
             hidden: true
-        }, {
-            path: '/deposit/detail',
-            name: '保证金详情',
-            component: DepositDetail,
-            hidden: true
-        }, {
+        },{
             path: '/home',
             name: 'Home',
             component: Home,

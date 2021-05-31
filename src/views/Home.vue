@@ -25,7 +25,7 @@
                                 <i style="color: #409eff;margin-right: 5px" :class="item.iconCls"></i>
                                 <span>{{item.name}}</span>
                             </template>
-                            <el-menu-item :index="child.path" v-for="(child,indexj) in item.children" :key="indexj">
+                            <el-menu-item :index="child.path" v-for="(child,indexj) in item.children" :key="indexj" v-if="child.show">
                                 {{child.name}}
                             </el-menu-item>
                         </el-submenu>

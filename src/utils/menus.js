@@ -22,7 +22,8 @@ export const formatRoutes = (routes) => {
             name,
             meta,
             iconCls,
-            children
+            children,
+            show
         } = router;
         if (children && children instanceof Array) {
             children = formatRoutes(children);
@@ -32,6 +33,7 @@ export const formatRoutes = (routes) => {
             name: name,
             iconCls: iconCls,
             meta: meta,
+            show:show,
             children: children,
             component(resolve) {
                 if (component.startsWith("Home")) {
@@ -52,6 +54,7 @@ export const formatRoutes = (routes) => {
             }
         }
         fmRoutes.push(fmRouter);
-    })
+    });
+
     return fmRoutes;
 }

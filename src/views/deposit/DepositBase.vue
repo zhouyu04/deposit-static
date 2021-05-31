@@ -160,7 +160,7 @@
                 this.fetchData();
             },
             showAddEmpView() {
-                this.$router.push('/deposit/detail','add')
+                this.$router.push('/deposit/detail')
             },
         }
 
