@@ -18,14 +18,14 @@
                 <el-col :span="6">
                     <el-form-item label="摘要:" prop="project">
                         <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.project" @blur=""
+                                  v-model="deposit.project" @blur="onInputBlur"
                                   placeholder="请输入摘要"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="摘要编码:">
                         <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.projectCode"
+                                  v-model="deposit.projectCode" disabled="disabled"
                                   placeholder="请输入科目编码"></el-input>
                     </el-form-item>
                 </el-col>
@@ -234,8 +234,20 @@
             },
 
             onInputBlur() {
-                let self = this;
-                console.log("失去焦点：" + self)
+                let name = this.deposit.project;
+
+                let url = '/deposit/base/createCode?name=' + name;
+
+                this.$axios.get(url)
+                    .then(resp => {
+                        if (resp) {
+                            this.deposit.projectCode = resp.msg;
+                        }
+                    })
+                    .catch(function (response) {
+                        console.log(response)
+                    })
+
             },
         }
     }
