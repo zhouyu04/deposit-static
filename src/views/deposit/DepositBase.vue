@@ -52,7 +52,7 @@
                 <el-table-column prop="describe" label="描述" align="left" width="85"/>
                 <el-table-column prop="debitMoney" label="借方金额" align="left" width="85"/>
                 <el-table-column prop="creditMoney" label="贷方金额" align="left" width="85"/>
-                <el-table-column prop="direction" label="方向" align="left" width="85"/>
+                <el-table-column prop="direction" label="方向" align="left" width="85" :formatter="dicFormatter"/>
                 <el-table-column prop="balance" label="余额" align="left" width="85"/>
             </el-table>
             <div style="display: flex;justify-content: flex-end">
@@ -162,6 +162,16 @@
             showAddEmpView() {
                 this.$router.push('/deposit/detail')
             },
+            dicFormatter(row, column) {
+                switch (row.direction) {
+                    case 1:
+                        return '借';
+                        break;
+                    case 2 :
+                        return '贷';
+                        break;
+                }
+            }
         }
 
     }

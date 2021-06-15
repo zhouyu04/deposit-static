@@ -207,7 +207,7 @@
                 this.$refs['depositForm'].validate(valid => {
                     if (valid) {
                         console.log(this.deposit);
-                        this.postRequest("/deposit/base/add", this.sub).then(resp => {
+                        this.postRequest("/deposit/base/add", this.deposit).then(resp => {
                             if (resp) {
                                 this.dialogVisible = false;
                                 this.$router.push('/deposit/base')
