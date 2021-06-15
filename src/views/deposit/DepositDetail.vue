@@ -17,9 +17,10 @@
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="摘要:" prop="project">
-                        <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.project" @blur="onInputBlur"
-                                  placeholder="请输入摘要"></el-input>
+                        <el-autocomplete class="inline-input" size="medium" style="width: 200px"
+                                         prefix-icon="el-icon-edit"
+                                         v-model="deposit.project" @blur="onInputBlur" :fetch-suggestions="queryProject"
+                                         placeholder="请输入摘要" @select="handleSelect"></el-autocomplete>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
@@ -155,6 +156,7 @@
                 dire: [{'id': 1, 'value': '借'}, {'id': 2, 'value': '贷'}],
                 deposit: {
                     subId: '',
+                    projectId: '',
                     project: '',
                     projectCode: '',
                     empDate: '',
@@ -249,6 +251,32 @@
                     })
 
             },
+            queryProject(queryString, callback) {
+
+                let params = {"key": queryString};
+                this.postRequest('/deposit/pro/list', params)
+                    .then(resp => {
+                        if (resp) {
+                            for (let i of resp.data) {
+                                i.value = i.name;
+                            }
+                            let dataList = resp.data;
+                            callback(dataList);
+                        }
+                    })
+                    .catch(function (response) {
+                        console.log(response)
+                    });
+            },
+            handleSelect(item) {
+                let id = item.id;
+                let projectName = item.name;
+                let code = item.code;
+
+                this.deposit.projectId = id;
+                this.deposit.project = projectName;
+                this.deposit.projectCode = code;
+            }
         }
     }
 </script>
