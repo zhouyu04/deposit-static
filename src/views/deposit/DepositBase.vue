@@ -18,9 +18,17 @@
                 </div>
                 <div>
 
-                    <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView">
+                    <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView" style="margin-right: 20px">
                         添加保证金
                     </el-button>
+                    <el-dropdown split-button type="primary" icon="el-icon-upload"
+                                 @click="importExcel" slot="dropdown">
+                        导入
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item @click="downloadExcel">下载模板</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+
                 </div>
             </div>
         </div>
@@ -33,27 +41,27 @@
                     element-loading-text="正在加载..."
                     element-loading-spinner="el-icon-loading"
                     element-loading-background="rgba(0, 0, 0, 0.8)"
-                    style="width: 100%">
+                    style=" width: 100%">
                 <el-table-column
                         type="selection"
                         width="55">
                 </el-table-column>
                 <el-table-column prop="id" v-if="show" fixed align="left" label="id"/>
-                <el-table-column prop="subjectName" label="科目名称" align="left" width="85"/>
+                <el-table-column prop="subjectName" label="科目名称" align="left" width="100"/>
                 <el-table-column prop="proof" label="凭证" align="left" width="85"/>
                 <el-table-column prop="reference" label="参考信息" align="left" width="85"/>
-                <el-table-column prop="project" label="摘要" align="left" width="85"/>
-                <el-table-column prop="projectCode" label="项目code" align="left" width="85"/>
+                <el-table-column prop="project" label="摘要" align="left" width="200"/>
+                <el-table-column prop="projectCode" label="项目code" align="left" width="200"/>
                 <el-table-column prop="businessNo" label="业务编号" align="left" width="85"/>
                 <el-table-column prop="settlementType" label="结算方式" align="left" width="85"/>
                 <el-table-column prop="settlement" label="结算号" align="left" width="85"/>
                 <el-table-column prop="targetSub" label="对方科目" align="left" width="85"/>
                 <el-table-column prop="sysModule" label="系统模块" align="left" width="85"/>
                 <el-table-column prop="describe" label="描述" align="left" width="85"/>
-                <el-table-column prop="debitMoney" label="借方金额" align="left" width="85"/>
-                <el-table-column prop="creditMoney" label="贷方金额" align="left" width="85"/>
+                <el-table-column prop="debitMoney" label="借方金额" align="left" width="100"/>
+                <el-table-column prop="creditMoney" label="贷方金额" align="left" width="100"/>
                 <el-table-column prop="direction" label="方向" align="left" width="85" :formatter="dicFormatter"/>
-                <el-table-column prop="balance" label="余额" align="left" width="85"/>
+                <el-table-column prop="balance" label="余额" align="left" width="100"/>
             </el-table>
             <div style="display: flex;justify-content: flex-end">
                 <el-pagination
@@ -65,35 +73,6 @@
                 </el-pagination>
             </div>
         </div>
-        <!--        <el-dialog-->
-        <!--                :title="title"-->
-        <!--                :visible.sync="dialogVisible"-->
-        <!--                width="80%">-->
-        <!--            <div>-->
-        <!--                <el-form :model="sub" :rules="rules" ref="subForm">-->
-        <!--                    <el-row>-->
-        <!--                        <el-col :span="6">-->
-        <!--                            <el-form-item label="科目编码:" prop="subjectCode">-->
-        <!--                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"-->
-        <!--                                          v-model="sub.subjectCode"-->
-        <!--                                          placeholder="请输入科目编码"></el-input>-->
-        <!--                            </el-form-item>-->
-        <!--                        </el-col>-->
-        <!--                        <el-col :span="6">-->
-        <!--                            <el-form-item label="科目名称:" prop="subjectName">-->
-        <!--                                <el-input size="mini" style="width: 150px" prefix-icon="el-icon-edit"-->
-        <!--                                          v-model="sub.subjectName"-->
-        <!--                                          placeholder="请输入科目名称"></el-input>-->
-        <!--                            </el-form-item>-->
-        <!--                        </el-col>-->
-        <!--                    </el-row>-->
-        <!--                </el-form>-->
-        <!--            </div>-->
-        <!--            <span slot="footer" class="dialog-footer">-->
-        <!--            <el-button @click="dialogVisible = false">取 消</el-button>-->
-        <!--            <el-button type="primary" @click="doAddSub">确 定</el-button>-->
-        <!--          </span>-->
-        <!--        </el-dialog>-->
     </div>
 </template>
 
@@ -171,6 +150,13 @@
                         return '贷';
                         break;
                 }
+            },
+            importExcel(){
+                console.log("importExcel")
+            },
+            downloadExcel(){
+                console.log("下载模板");
+                window.location.href="/src/assets/履约导入模板.xlsx";
             }
         }
 

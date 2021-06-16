@@ -246,7 +246,7 @@
                     return;
                 }
 
-                let url = '/deposit/base/createCode?name=' + name;
+                let url = '/deposit/pro/createCode?name=' + name;
 
                 this.$axios.get(url)
                     .then(resp => {
