@@ -19,15 +19,14 @@
                     <el-form-item label="摘要:" prop="project">
                         <el-autocomplete class="inline-input" size="medium" style="width: 200px"
                                          prefix-icon="el-icon-edit"
-                                         v-model="deposit.project" @blur="onInputBlur" :fetch-suggestions="queryProject"
+                                         v-model="deposit.project" :fetch-suggestions="queryProject"
                                          placeholder="请输入摘要" @select="handleSelect"></el-autocomplete>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6">
                     <el-form-item label="摘要编码:">
                         <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.projectCode" disabled="disabled"
-                                  placeholder="请输入科目编码"></el-input>
+                                  disabled="disabled" placeholder="系统自动生成"></el-input>
                     </el-form-item>
                 </el-col>
 
@@ -235,8 +234,17 @@
                 return string;
             },
 
+
             onInputBlur() {
+
+
+                let projectId = this.deposit.projectId;
                 let name = this.deposit.project;
+                console.log("获取code:" + projectId);
+                if (projectId != null && projectId != '') {
+                    console.log("存在取消查询" + projectId);
+                    return;
+                }
 
                 let url = '/deposit/base/createCode?name=' + name;
 
@@ -249,7 +257,6 @@
                     .catch(function (response) {
                         console.log(response)
                     })
-
             },
             queryProject(queryString, callback) {
 
@@ -267,8 +274,10 @@
                     .catch(function (response) {
                         console.log(response)
                     });
+                console.log("查询下拉值");
             },
             handleSelect(item) {
+                console.log("item:" + item);
                 let id = item.id;
                 let projectName = item.name;
                 let code = item.code;
@@ -276,7 +285,20 @@
                 this.deposit.projectId = id;
                 this.deposit.project = projectName;
                 this.deposit.projectCode = code;
-            }
+                console.log("赋值阶段：", id, projectName, code);
+                console.log(this.deposit);
+            },
+
+        }
+    }
+
+    function sleep(NumMillis) {
+        let nowTime = new Date();
+        let exitTime = nowTime.getTime() + NumMillis;
+        while (true) {
+            let nowDate = new Date();
+            if (nowDate.getTime() > exitTime)
+                return;
         }
     }
 </script>
