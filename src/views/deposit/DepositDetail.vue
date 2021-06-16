@@ -181,19 +181,11 @@
         // },
         methods: {
             initSubject() {
-                let url = '/deposit/sub/list';
-                let searchValue = this.searchValue;
+                let appointmentId = this.$route.query.appointmentId;
+                console.log("initSubject:"+appointmentId);
+                if (appointmentId != null && appointmentId != ''){
 
-                this.$axios.post(url, searchValue)
-                    .then(resp => {
-                        if (resp) {
-                            this.subs = resp.data;
-                            this.total = resp.total;
-                        }
-                    })
-                    .catch(function (response) {
-                        console.log(response)
-                    })
+                }
             },
 
             emptySub() {

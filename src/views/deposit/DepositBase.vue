@@ -21,6 +21,11 @@
                     <el-button type="primary" icon="el-icon-plus" @click="showAddEmpView" style="margin-right: 20px">
                         添加保证金
                     </el-button>
+
+                    <el-button type="primary" icon="el-icon-edit" @click="showEditEmpView" style="margin-right: 20px">
+                        修改
+                    </el-button>
+
                     <el-dropdown split-button type="primary" icon="el-icon-upload"
                                  @click="importExcel" slot="dropdown">
                         导入
@@ -35,8 +40,8 @@
         <div style="margin-top: 10px">
             <el-table
                     :data="deposits"
-                    stripe
-                    border
+                    stripe border
+                    ref="multipleTable"
                     v-loading="loading"
                     element-loading-text="正在加载..."
                     element-loading-spinner="el-icon-loading"
@@ -45,6 +50,11 @@
                 <el-table-column
                         type="selection"
                         width="55">
+                    <template slot-scope="scope">
+                        <el-radio v-model="currentRowId" :label="scope.row.id" @change="changeRedio($event,scope.row)">
+                            &nbsp;
+                        </el-radio>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="id" v-if="show" fixed align="left" label="id"/>
                 <el-table-column prop="subjectName" label="科目名称" align="left" width="100"/>
@@ -81,6 +91,7 @@
     export default {
         data() {
             return {
+                currentRowId: null,
                 searchValue: {},
                 show: false,
                 loading: false,
@@ -141,6 +152,17 @@
             showAddEmpView() {
                 this.$router.push('/deposit/detail')
             },
+            showEditEmpView(rows) {
+                let currentRowId = this.currentRowId;
+                console.log("选中行ID：" + currentRowId);
+                this.$router.push({path:'/deposit/detail', query: {appointmentId: currentRowId}})
+                    .then(resp => {
+                        console.log(resp)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            },
             dicFormatter(row, column) {
                 switch (row.direction) {
                     case 1:
@@ -151,13 +173,17 @@
                         break;
                 }
             },
-            importExcel(){
+            importExcel() {
                 console.log("importExcel")
             },
-            downloadExcel(){
+            downloadExcel() {
                 console.log("下载模板");
-                window.location.href="/src/assets/履约导入模板.xlsx";
-            }
+                window.location.href = "/src/assets/履约导入模板.xlsx";
+            },
+            changeRedio(event, row) {
+                console.log('event,row:', event, row);
+                this.currentRowId = event;
+            },
         }
 
     }
