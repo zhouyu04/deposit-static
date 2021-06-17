@@ -49,7 +49,7 @@
                     style=" width: 100%">
                 <el-table-column
                         type="selection"
-                        width="55">
+                        width="40">
                     <template slot-scope="scope">
                         <el-radio v-model="currentRowId" :label="scope.row.id" @change="changeRedio($event,scope.row)">
                             &nbsp;
@@ -155,6 +155,10 @@
             showEditEmpView(rows) {
                 let currentRowId = this.currentRowId;
                 console.log("选中行ID：" + currentRowId);
+                if (currentRowId == null){
+                    this.$message.error('请选择数据行');
+                    return;
+                }
                 this.$router.push({path:'/deposit/detail', query: {appointmentId: currentRowId}})
                     .then(resp => {
                         console.log(resp)
