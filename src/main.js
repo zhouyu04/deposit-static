@@ -3,9 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import uploader from 'vue-simple-uploader'
+Vue.use(uploader);
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+
+import jquery from 'jquery'
+
 
 Vue.use(ElementUI);
 // Vue.prototype.$ELEMENT = {size: 'small', zIndex: 3000};
@@ -45,5 +50,6 @@ router.beforeEach((to, from, next) => {
 new Vue({
     router,
     store,
+    jquery,
     render: h => h(App)
 }).$mount('#app')

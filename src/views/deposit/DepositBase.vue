@@ -29,8 +29,9 @@
                     <el-dropdown split-button type="primary" icon="el-icon-upload"
                                  @click="importExcel" slot="dropdown">
                         导入
+                        <input id="file" name="file" type="file" value="" hidden="hidden"/>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item @click="downloadExcel">下载模板</el-dropdown-item>
+                            <el-dropdown-item @click.native="downloadExcel">下载模板</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
 
@@ -178,7 +179,8 @@
                 }
             },
             importExcel() {
-                console.log("importExcel")
+                console.log("importExcel");
+                $('#file').click()
             },
             downloadExcel() {
                 console.log("下载模板");
@@ -189,8 +191,9 @@
                 this.currentRowId = event;
             },
         }
-
     }
+
+
 </script>
 
 <!--<style>-->

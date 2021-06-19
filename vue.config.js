@@ -1,5 +1,8 @@
 let proxyObj = {};
 const CompressionPlugin = require("compression-webpack-plugin");
+
+const webpack = require("webpack");
+
 proxyObj['/ws'] = {
     ws: true,
     target: "ws://localhost:8085"
@@ -18,17 +21,15 @@ module.exports = {
         port: 8080,
         proxy: proxyObj
     },
-    configureWebpack: config => {
-        if (process.env.NODE_ENV === 'production') {
-            return {
-                plugins: [
-                    new CompressionPlugin({
-                        test: /\.js$|\.html$|\.css/,
-                        threshold: 1024,
-                        deleteOriginalAssets: false
-                    })
-                ]
-            }
-        }
+    configureWebpack: {
+
+        plugins: [
+            new webpack.ProvidePlugin({
+                $: "jquery",
+                jQuery: "jquery",
+                "window.jQuery": "jquery",
+                Popper: ["popper.js", "default"]
+            })
+        ]
     }
 }
