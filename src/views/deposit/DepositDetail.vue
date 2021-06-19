@@ -23,10 +23,19 @@
                                          placeholder="请输入摘要" @select="handleSelect"></el-autocomplete>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col :span="6" v-if="this.$route.query.appointmentId ==null">
                     <el-form-item label="摘要编码:">
                         <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
                                   disabled="disabled" placeholder="系统自动生成"></el-input>
+                    </el-form-item>
+                </el-col>
+
+                <el-col :span="6" v-if="this.$route.query.appointmentId !=null">
+                    <el-form-item label="关联摘要:" prop="releateProjectId">
+                        <el-autocomplete class="inline-input" size="medium" style="width: 200px"
+                                         prefix-icon="el-icon-edit"
+                                         v-model="deposit.releateProject" :fetch-suggestions="queryProject"
+                                         placeholder="请输入摘要" @select="handleSelectReleated"></el-autocomplete>
                     </el-form-item>
                 </el-col>
 
@@ -117,7 +126,8 @@
 
         <span slot="footer" class="dialog-footer" style="text-align: center">
             <el-button @click="cancelDeposit">取 消</el-button>
-            <el-button type="primary" @click="doAddDeposit">确 定</el-button>
+            <el-button type="primary" v-if="this.$route.query.appointmentId ==null" @click="doAddDeposit">新 增</el-button>
+            <el-button type="primary" v-if="this.$route.query.appointmentId !=null" @click="doEditDeposit">修 改</el-button>
         </span>
     </div>
 </template>
@@ -157,6 +167,8 @@
                     subId: '',
                     projectId: '',
                     project: '',
+                    releateProject:'',
+                    releateProjectId:'',
                     projectCode: '',
                     empDate: '',
                     proof: '',
@@ -235,6 +247,19 @@
                     }
                 });
             },
+            doEditDeposit() {
+                this.$refs['depositForm'].validate(valid => {
+                    if (valid) {
+                        console.log(this.deposit);
+                        this.postRequest("/deposit/base/edit", this.deposit).then(resp => {
+                            if (resp) {
+                                this.dialogVisible = false;
+                                this.$router.push('/deposit/base')
+                            }
+                        })
+                    }
+                });
+            },
 
             cancelDeposit() {
                 this.$router.push('/deposit/base')
@@ -303,7 +328,19 @@
                 this.deposit.projectId = id;
                 this.deposit.project = projectName;
                 this.deposit.projectCode = code;
-                console.log("赋值阶段：", id, projectName, code);
+                // console.log("赋值阶段：", id, projectName, code);
+                // console.log(this.deposit);
+            },
+            handleSelectReleated(item) {
+                console.log("item:" + item);
+                let id = item.id;
+                let projectName = item.name;
+                let code = item.code;
+
+                this.deposit.releateProjectId = id;
+                this.deposit.releateProject = projectName;
+                // this.deposit.projectCode = code;
+                // console.log("赋值阶段：", id, projectName, code);
                 console.log(this.deposit);
             },
 
