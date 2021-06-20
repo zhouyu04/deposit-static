@@ -62,15 +62,15 @@
                 <el-table-column prop="proof" label="凭证" align="left" width="85"/>
                 <el-table-column prop="reference" label="参考信息" align="left" width="85"/>
                 <el-table-column prop="project" label="摘要" align="left" width="200"/>
+                <el-table-column prop="empDate" label="业务日期" align="left" width="200"/>
                 <el-table-column prop="projectCode" label="项目code" align="left" width="200"/>
-                <el-table-column prop="businessNo" label="业务编号" align="left" width="85"/>
-                <el-table-column prop="settlementType" label="结算方式" align="left" width="85"/>
-                <el-table-column prop="settlement" label="结算号" align="left" width="85"/>
-                <el-table-column prop="targetSub" label="对方科目" align="left" width="85"/>
-                <el-table-column prop="sysModule" label="系统模块" align="left" width="85"/>
+<!--                <el-table-column prop="businessNo" label="业务编号" align="left" width="85"/>-->
+<!--                <el-table-column prop="settlementType" label="结算方式" align="left" width="85"/>-->
+<!--                <el-table-column prop="settlement" label="结算号" align="left" width="85"/>-->
+<!--                <el-table-column prop="targetSub" label="对方科目" align="left" width="85"/>-->
+<!--                <el-table-column prop="sysModule" label="系统模块" align="left" width="85"/>-->
                 <el-table-column prop="describe" label="描述" align="left" width="85"/>
-                <el-table-column prop="debitMoney" label="借方金额" align="left" width="100"/>
-                <el-table-column prop="creditMoney" label="贷方金额" align="left" width="100"/>
+                <el-table-column prop="money" label="金额" align="left" width="100"/>
                 <el-table-column prop="direction" label="方向" align="left" width="85" :formatter="dicFormatter"/>
                 <el-table-column prop="balance" label="余额" align="left" width="100"/>
             </el-table>

@@ -3,9 +3,20 @@
         <el-form ref="depositForm" :rules="rules" :model="deposit" label-width="80px">
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="科目名称" prop="subId">
+                    <el-form-item label="科目名称" prop="subId" v-if="this.$route.query.appointmentId ==null">
                         <el-select style="width: 200px" v-model="deposit.subId" :filterable="false" filterable
                                    placeholder="请选择">
+                            <el-option
+                                    v-for="item in subs"
+                                    :key="item.subjectCode"
+                                    :label="item.subjectName"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item v-if="this.$route.query.appointmentId !=null" label="科目名称" prop="subId">
+                        <el-select style="width: 200px" v-model="deposit.subId" :filterable="false" filterable
+                                   placeholder="请选择" disabled="disabled">
                             <el-option
                                     v-for="item in subs"
                                     :key="item.subjectCode"
@@ -23,6 +34,7 @@
                                          placeholder="请输入摘要" @select="handleSelect"></el-autocomplete>
                     </el-form-item>
                 </el-col>
+
                 <el-col :span="6" v-if="this.$route.query.appointmentId ==null">
                     <el-form-item label="摘要编码:">
                         <el-input size="medium" style="width: 200px" prefix-icon="el-icon-edit"
@@ -31,17 +43,40 @@
                 </el-col>
 
                 <el-col :span="6" v-if="this.$route.query.appointmentId !=null">
-                    <el-form-item label="关联摘要:" prop="releateProjectId">
-                        <el-autocomplete class="inline-input" size="medium" style="width: 200px"
-                                         prefix-icon="el-icon-edit"
-                                         v-model="deposit.releateProject" :fetch-suggestions="queryProject"
-                                         placeholder="请输入摘要" @select="handleSelectReleated"></el-autocomplete>
+                    <!--                    <el-form-item label="关联摘要:" prop="releateProjectId">-->
+                    <!--                        <el-autocomplete class="inline-input" size="medium" style="width: 200px"-->
+                    <!--                                         prefix-icon="el-icon-edit"-->
+                    <!--                                         v-model="deposit.releateProject" :fetch-suggestions="queryProject"-->
+                    <!--                                         placeholder="请输入摘要" @select="handleSelectReleated"></el-autocomplete>-->
+                    <!--                    </el-form-item>-->
+
+                    <el-form-item label="关联摘要" prop="releateProjectId">
+                        <el-select style="width: 200px" v-model="deposit.releateProject" multiple
+                                   filterable
+                                   remote
+                                   reserve-keyword
+                                   :remote-method="remoteMethod"
+                                   placeholder="请选择">
+                            <el-option v-for="pro in deposit.pros"
+                                       :key="pro.code"
+                                       :label="pro.name"
+                                       :value="pro.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="6">
-                    <el-form-item label="业务日期:">
+                    <el-form-item label="业务日期:" v-if="this.$route.query.appointmentId ==null">
                         <el-date-picker style="width: 200px"
+                                        v-model="deposit.empDate"
+                                        type="date"
+                                        placeholder="请输入业务日期">
+                        </el-date-picker>
+                    </el-form-item>
+
+                    <el-form-item label="业务日期:" v-if="this.$route.query.appointmentId !=null">
+                        <el-date-picker style="width: 200px" disabled="disabled"
                                         v-model="deposit.empDate"
                                         type="date"
                                         placeholder="请输入业务日期">
@@ -52,8 +87,14 @@
 
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="凭证字号:">
+                    <el-form-item label="凭证字号:" v-if="this.$route.query.appointmentId ==null">
                         <el-input style="width: 200px" prefix-icon="el-icon-edit"
+                                  v-model="deposit.proof"
+                                  placeholder="请输入凭证字号"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="凭证字号:" v-if="this.$route.query.appointmentId !=null">
+                        <el-input style="width: 200px" prefix-icon="el-icon-edit" disabled="disabled"
                                   v-model="deposit.proof"
                                   placeholder="请输入凭证字号"></el-input>
                     </el-form-item>
@@ -68,16 +109,27 @@
                 </el-col>
 
                 <el-col :span="6">
-                    <el-form-item label="结算方式:">
+                    <el-form-item label="结算方式:" v-if="this.$route.query.appointmentId ==null">
                         <el-input style="width: 200px" prefix-icon="el-icon-edit"
+                                  v-model="deposit.settlementType"
+                                  placeholder="请输入结算方式"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="结算方式:" v-if="this.$route.query.appointmentId !=null">
+                        <el-input style="width: 200px" prefix-icon="el-icon-edit" disabled="disabled"
                                   v-model="deposit.settlementType"
                                   placeholder="请输入结算方式"></el-input>
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="6">
-                    <el-form-item label="结算号:">
+                    <el-form-item label="结算号:" v-if="this.$route.query.appointmentId ==null">
                         <el-input style="width: 200px" prefix-icon="el-icon-edit"
+                                  v-model="deposit.settlement"
+                                  placeholder="请输入结算号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="结算号:" v-if="this.$route.query.appointmentId !=null">
+                        <el-input style="width: 200px" prefix-icon="el-icon-edit" disabled="disabled"
                                   v-model="deposit.settlement"
                                   placeholder="请输入结算号"></el-input>
                     </el-form-item>
@@ -86,23 +138,34 @@
 
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="借方金额:">
+                    <el-form-item label="金额:" v-if="this.$route.query.appointmentId ==null">
                         <el-input style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.debitMoney" type="number"
+                                  v-model="deposit.money" type="number"
+                                  placeholder="请输入借方金额"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="金额:" v-if="this.$route.query.appointmentId !=null">
+                        <el-input style="width: 200px" prefix-icon="el-icon-edit" disabled="disabled"
+                                  v-model="deposit.money" type="number"
                                   placeholder="请输入借方金额"></el-input>
                     </el-form-item>
                 </el-col>
 
-                <el-col :span="6">
-                    <el-form-item label="贷方金额:">
-                        <el-input style="width: 200px" prefix-icon="el-icon-edit"
-                                  v-model="deposit.creditMoney" type="number"
-                                  placeholder="请输入贷方金额"></el-input>
-                    </el-form-item>
-                </el-col>
+<!--                <el-col :span="6">-->
+<!--                    <el-form-item label="贷方金额:" v-if="this.$route.query.appointmentId ==null">-->
+<!--                        <el-input style="width: 200px" prefix-icon="el-icon-edit"-->
+<!--                                  v-model="deposit.creditMoney" type="number"-->
+<!--                                  placeholder="请输入贷方金额"></el-input>-->
+<!--                    </el-form-item>-->
+<!--                    <el-form-item label="贷方金额:" v-if="this.$route.query.appointmentId !=null">-->
+<!--                        <el-input style="width: 200px" prefix-icon="el-icon-edit" disabled="disabled"-->
+<!--                                  v-model="deposit.creditMoney" type="number"-->
+<!--                                  placeholder="请输入贷方金额"></el-input>-->
+<!--                    </el-form-item>-->
+<!--                </el-col>-->
 
                 <el-col :span="6">
-                    <el-form-item label="方向:">
+                    <el-form-item label="方向:" v-if="this.$route.query.appointmentId ==null">
                         <el-select style="width: 200px" v-model="deposit.direction" filterable placeholder="请选择">
                             <el-option
                                     v-for="item in dire"
@@ -112,11 +175,30 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+
+                    <el-form-item label="方向:" v-if="this.$route.query.appointmentId !=null">
+                        <el-select style="width: 200px" v-model="deposit.direction" filterable placeholder="请选择"
+                                   disabled="disabled">
+                            <el-option
+                                    v-for="item in dire"
+                                    :key="item.value"
+                                    :label="item.value"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
                 </el-col>
 
                 <el-col :span="6">
-                    <el-form-item label="余额:">
+                    <el-form-item label="余额:" v-if="this.$route.query.appointmentId ==null">
                         <el-input style="width: 200px" prefix-icon="el-icon-edit"
+                                  v-model="deposit.balance" type="number"
+                                  placeholder="请输入余额"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="余额:" v-if="this.$route.query.appointmentId !=null">
+                        <el-input style="width: 200px" prefix-icon="el-icon-edit" disabled="disabled"
                                   v-model="deposit.balance" type="number"
                                   placeholder="请输入余额"></el-input>
                     </el-form-item>
@@ -126,8 +208,10 @@
 
         <span slot="footer" class="dialog-footer" style="text-align: center">
             <el-button @click="cancelDeposit">取 消</el-button>
-            <el-button type="primary" v-if="this.$route.query.appointmentId ==null" @click="doAddDeposit">新 增</el-button>
-            <el-button type="primary" v-if="this.$route.query.appointmentId !=null" @click="doEditDeposit">修 改</el-button>
+            <el-button type="primary" v-if="this.$route.query.appointmentId ==null"
+                       @click="doAddDeposit">新 增</el-button>
+            <el-button type="primary" v-if="this.$route.query.appointmentId !=null"
+                       @click="doEditDeposit">修 改</el-button>
         </span>
     </div>
 </template>
@@ -146,6 +230,7 @@
                 subjectId: '',
                 title: '',
                 subs: [],
+
                 total: 0,
                 page: 1,
                 size: 10,
@@ -167,18 +252,18 @@
                     subId: '',
                     projectId: '',
                     project: '',
-                    releateProject:'',
-                    releateProjectId:'',
+                    releateProject: [],
+                    releateProjectId: '',
                     projectCode: '',
                     empDate: '',
                     proof: '',
                     reference: '',
                     settlementType: '',
                     settlement: '',
-                    debitMoney: '',
-                    creditMoney: '',
+                    money: '',
                     direction: '',
                     balance: '',
+                    pros: [],
                 }
             }
         },
@@ -209,15 +294,22 @@
 
 
                 let appointmentId = this.$route.query.appointmentId;
-                console.log("initSubject:"+appointmentId);
-                if (appointmentId != null && appointmentId != ''){
-                    let url = '/deposit/base/detail?id='+appointmentId;
+                if (appointmentId != null && appointmentId != '') {
+                    let url = '/deposit/base/detail?id=' + appointmentId;
                     let searchValue = this.searchValue;
 
                     this.$axios.get(url)
                         .then(resp => {
                             if (resp) {
                                 this.deposit = resp.obj;
+
+                                var arr = resp.obj.pros;
+                                var ps = new Array(arr.length+1);
+                                for (var i = 0;i<arr.length;i++){
+                                    ps.push(arr[i].id);
+                                }
+                                this.deposit.releateProject= arr;
+
                             }
                         })
                         .catch(function (response) {
@@ -237,7 +329,6 @@
             doAddDeposit() {
                 this.$refs['depositForm'].validate(valid => {
                     if (valid) {
-                        console.log(this.deposit);
                         this.postRequest("/deposit/base/add", this.deposit).then(resp => {
                             if (resp) {
                                 this.dialogVisible = false;
@@ -250,7 +341,6 @@
             doEditDeposit() {
                 this.$refs['depositForm'].validate(valid => {
                     if (valid) {
-                        console.log(this.deposit);
                         this.postRequest("/deposit/base/edit", this.deposit).then(resp => {
                             if (resp) {
                                 this.dialogVisible = false;
@@ -267,8 +357,6 @@
 
             changeActiveProp(row, column) {
                 const prop = row[column.property];
-
-                let string = null;
                 if (prop == 1) {
                     string = "生效";
                 } else {
@@ -283,9 +371,7 @@
 
                 let projectId = this.deposit.projectId;
                 let name = this.deposit.project;
-                console.log("获取code:" + projectId);
                 if (projectId != null && projectId != '') {
-                    console.log("存在取消查询" + projectId);
                     return;
                 }
 
@@ -317,10 +403,8 @@
                     .catch(function (response) {
                         console.log(response)
                     });
-                console.log("查询下拉值");
             },
             handleSelect(item) {
-                console.log("item:" + item);
                 let id = item.id;
                 let projectName = item.name;
                 let code = item.code;
@@ -328,11 +412,8 @@
                 this.deposit.projectId = id;
                 this.deposit.project = projectName;
                 this.deposit.projectCode = code;
-                // console.log("赋值阶段：", id, projectName, code);
-                // console.log(this.deposit);
             },
             handleSelectReleated(item) {
-                console.log("item:" + item);
                 let id = item.id;
                 let projectName = item.name;
                 let code = item.code;
@@ -340,9 +421,23 @@
                 this.deposit.releateProjectId = id;
                 this.deposit.releateProject = projectName;
                 // this.deposit.projectCode = code;
-                // console.log("赋值阶段：", id, projectName, code);
-                console.log(this.deposit);
             },
+            remoteMethod(query) {
+                let params = {"key": query};
+                this.postRequest('/deposit/pro/list', params)
+                    .then(resp => {
+                        if (resp) {
+                            for (let i of resp.data) {
+                                i.value = i.name;
+                            }
+                            let dataList = resp.data;
+                            this.pros = dataList;
+                        }
+                    })
+                    .catch(function (response) {
+                    });
+
+            }
 
         }
     }
