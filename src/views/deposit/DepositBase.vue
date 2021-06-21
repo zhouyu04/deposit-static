@@ -61,7 +61,7 @@
                 <el-table-column prop="subjectName" label="科目名称" align="left" width="100"/>
                 <el-table-column prop="proof" label="凭证" align="left" width="85"/>
                 <el-table-column prop="reference" label="参考信息" align="left" width="85"/>
-                <el-table-column prop="project" label="摘要" align="left" width="200"/>
+                <el-table-column prop="project" label="摘要" align="left" width="400"/>
                 <el-table-column prop="empDate" label="业务日期" align="left" width="200"/>
                 <el-table-column prop="projectCode" label="项目code" align="left" width="200"/>
 <!--                <el-table-column prop="businessNo" label="业务编号" align="left" width="85"/>-->
