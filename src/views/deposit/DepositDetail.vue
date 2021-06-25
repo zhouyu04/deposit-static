@@ -71,6 +71,7 @@
                         <el-date-picker style="width: 200px"
                                         v-model="deposit.empDate"
                                         type="date"
+                                        value-format="yyyy-MM-dd">
                                         placeholder="请输入业务日期">
                         </el-date-picker>
                     </el-form-item>
@@ -230,7 +231,6 @@
                 subjectId: '',
                 title: '',
                 subs: [],
-
                 total: 0,
                 page: 1,
                 size: 10,

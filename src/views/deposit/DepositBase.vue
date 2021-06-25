@@ -3,6 +3,16 @@
         <div>
             <div style="display: flex;justify-content: space-between">
                 <div>
+                    <el-select style="width: 200px;margin-right: 10px" v-model="searchValue.subId" :filterable="false" filterable
+                               placeholder="请选择科目">
+                        <el-option :key="'全部'" :label="'全部'" :value=null></el-option>
+                        <el-option
+                                v-for="item in subs"
+                                :key="item.subjectCode"
+                                :label="item.subjectName"
+                                :value="item.id">
+                        </el-option>
+                    </el-select>
 
                     <el-input placeholder="请输入关键字进行搜索，可以直接回车搜索..." prefix-icon="el-icon-search"
                               clearable
@@ -58,12 +68,12 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="id" v-if="show" fixed align="left" label="id"/>
-                <el-table-column prop="subjectName" label="科目名称" align="left" width="100"/>
+                <el-table-column prop="subjectName" label="科目名称" align="left" width="200"/>
                 <el-table-column prop="proof" label="凭证" align="left" width="85"/>
                 <el-table-column prop="reference" label="参考信息" align="left" width="85"/>
                 <el-table-column prop="project" label="摘要" align="left" width="400"/>
-                <el-table-column prop="empDate" label="业务日期" align="left" width="200"/>
-                <el-table-column prop="projectCode" label="项目code" align="left" width="200"/>
+                <el-table-column prop="empDate" label="业务日期" align="left" width="150"/>
+                <el-table-column prop="projectCode" label="项目code" align="left" width="300"/>
 <!--                <el-table-column prop="businessNo" label="业务编号" align="left" width="85"/>-->
 <!--                <el-table-column prop="settlementType" label="结算方式" align="left" width="85"/>-->
 <!--                <el-table-column prop="settlement" label="结算号" align="left" width="85"/>-->
@@ -93,10 +103,11 @@
         data() {
             return {
                 currentRowId: null,
-                searchValue: {},
+                searchValue: {subId:null},
                 show: false,
                 loading: false,
                 id: '',
+                subs:[],
                 subjectName: '',
                 proof: '',
                 reference: '',
@@ -121,12 +132,14 @@
         created() {
             // 组件创建完后获取数据，
             // 此时 data 已经被 observed 了
-            this.fetchData()
+            this.fetchData();
+            this.fetchSub();
         },
         methods: {
             fetchData() {
                 let url = '/deposit/base/list';
                 let searchValue = this.searchValue;
+                console.log(searchValue);
 
                 this.$axios.post(url, searchValue)
                     .then(resp => {
@@ -138,6 +151,20 @@
                     .catch(function (response) {
                         console.log(response)
                     })
+            },
+            fetchSub(){
+                let url = '/deposit/sub/list';
+                let searchValue = this.searchValue;
+
+                this.$axios.post(url, searchValue)
+                    .then(resp => {
+                        if (resp) {
+                            this.subs = resp.data;
+                        }
+                    })
+                    .catch(function (response) {
+                        console.log(response)
+                    });
             },
 
             sizeChange(currentSize) {
