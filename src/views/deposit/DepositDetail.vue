@@ -204,6 +204,13 @@
                                   placeholder="请输入余额"></el-input>
                     </el-form-item>
                 </el-col>
+
+                <el-col :span="6">
+                    <el-form-item label="是否统计" prop="isCount">
+                        <el-radio v-model="deposit.isCount" border="border" @click.native.prevent="type_change()" :label="1">开启</el-radio>
+                    </el-form-item>
+                </el-col>
+
             </el-row>
         </el-form>
 
@@ -264,6 +271,7 @@
                     direction: '',
                     balance: '',
                     pros: [],
+                    isCount: '',
                 }
             }
         },
@@ -296,7 +304,6 @@
                 let appointmentId = this.$route.query.appointmentId;
                 if (appointmentId != null && appointmentId != '') {
                     let url = '/deposit/base/detail?id=' + appointmentId;
-                    let searchValue = this.searchValue;
 
                     this.$axios.get(url)
                         .then(resp => {
@@ -339,6 +346,7 @@
                 });
             },
             doEditDeposit() {
+                console.log(this.deposit);
                 this.$refs['depositForm'].validate(valid => {
                     if (valid) {
                         this.postRequest("/deposit/base/edit", this.deposit).then(resp => {
@@ -363,29 +371,6 @@
                     string = "未生效";
                 }
                 return string;
-            },
-
-
-            onInputBlur() {
-
-
-                let projectId = this.deposit.projectId;
-                let name = this.deposit.project;
-                if (projectId != null && projectId != '') {
-                    return;
-                }
-
-                let url = '/deposit/pro/createCode?name=' + name;
-
-                this.$axios.get(url)
-                    .then(resp => {
-                        if (resp) {
-                            this.deposit.projectCode = resp.msg;
-                        }
-                    })
-                    .catch(function (response) {
-                        console.log(response)
-                    })
             },
             queryProject(queryString, callback) {
 
@@ -413,15 +398,6 @@
                 this.deposit.project = projectName;
                 this.deposit.projectCode = code;
             },
-            handleSelectReleated(item) {
-                let id = item.id;
-                let projectName = item.name;
-                let code = item.code;
-
-                this.deposit.releateProjectId = id;
-                this.deposit.releateProject = projectName;
-                // this.deposit.projectCode = code;
-            },
             remoteMethod(query) {
                 let params = {"key": query};
                 this.postRequest('/deposit/pro/list', params)
@@ -436,7 +412,14 @@
                     })
                     .catch(function (response) {
                     });
-
+            },
+            type_change(){
+                console.log("asdsa");
+                if (this.deposit.isCount == 1){
+                    this.deposit.isCount = 0;
+                }else{
+                    this.deposit.isCount = 1;
+                }
             }
 
         }
