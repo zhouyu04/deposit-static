@@ -103,7 +103,7 @@
         data() {
             return {
                 currentRowId: null,
-                searchValue: {subId:null},
+                searchValue: {subId:null,type:''},
                 show: false,
                 loading: false,
                 id: '',
@@ -139,6 +139,10 @@
             fetchData() {
                 let url = '/deposit/base/list';
                 let searchValue = this.searchValue;
+                let type = this.$route.query.type;
+
+                this.searchValue.type = type;
+
                 console.log(searchValue);
 
                 this.$axios.post(url, searchValue)
